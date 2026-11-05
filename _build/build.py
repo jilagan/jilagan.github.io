@@ -31,6 +31,15 @@ def head(title, desc, path, extra=""):
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}">
 <link rel="canonical" href="{BASE}{path}">
+<meta property="og:type" content="{'website' if path == '/' else 'article'}">
+<meta property="og:site_name" content="Joseph Benjamin R. Ilagan">
+<meta property="og:title" content="{esc(title)}">
+<meta property="og:description" content="{esc(desc)}">
+<meta property="og:url" content="{BASE}{path}">
+<meta property="og:image" content="{BASE}/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta name="twitter:card" content="summary_large_image">
 {extra}{FONTS}
 <link rel="stylesheet" href="/style.css">
 </head>
@@ -67,6 +76,7 @@ def pub_item(p):
 
 os.makedirs(OUT, exist_ok=True)
 shutil.copy(os.path.join(here, "style.css"), os.path.join(OUT, "style.css"))
+shutil.copy(os.path.join(here, "og.png"), os.path.join(OUT, "og.png"))
 open(os.path.join(OUT, ".nojekyll"), "w").close()
 
 # Home page
