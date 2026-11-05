@@ -5,7 +5,7 @@ spec = importlib.util.spec_from_file_location("data", os.path.join(here, "data.p
 data = importlib.util.module_from_spec(spec); spec.loader.exec_module(data)
 
 OUT, PDFS = sys.argv[1], sys.argv[2]
-BASE = "https://jilagan.github.io"
+BASE = "https://jobenilagan.com"
 ME = data.ME
 FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com">'
          '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
@@ -78,6 +78,7 @@ os.makedirs(OUT, exist_ok=True)
 shutil.copy(os.path.join(here, "style.css"), os.path.join(OUT, "style.css"))
 shutil.copy(os.path.join(here, "og.png"), os.path.join(OUT, "og.png"))
 open(os.path.join(OUT, ".nojekyll"), "w").close()
+with open(os.path.join(OUT, "CNAME"), "w") as f: f.write("jobenilagan.com\n")
 
 # Home page
 years = []

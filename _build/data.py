@@ -1,4 +1,4 @@
-# Publication data for jilagan.github.io, from Google Scholar (user J1x6kG8AAAAJ)
+# Publication data for jobenilagan.com, from Google Scholar (user J1x6kG8AAAAJ)
 # with details from Crossref. Order within a year follows the Scholar profile.
 
 ME = "Joseph Benjamin Ilagan"
