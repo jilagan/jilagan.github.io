@@ -94,7 +94,7 @@ body = f"""<header class="masthead">
 
 <section class="pubs" aria-labelledby="pubs-h">
 <h2 id="pubs-h">Publications</h2>
-<p class="pubs-note">Newest first. Where a free author copy is allowed, it is linked as a PDF.</p>
+<p class="pubs-note">Newest first. Free author copies are linked as PDFs where the publisher allows it. Open-access versions are marked.</p>
 """
 for y, items in years:
     body += f'<section class="year" aria-label="{y}">\n<h3>{y}</h3>\n<ol>\n' + "\n".join(pub_item(p) for p in items) + "\n</ol>\n</section>\n"
