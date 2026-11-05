@@ -129,11 +129,10 @@ for p in data.PUBS:
     pdf_url = f"{BASE}{path}{d['pdf']}"
     meta = [("citation_title", p["title"])]
     meta += [("citation_author", a) for a in p["authors"]]
-    meta += [("citation_publication_date", d["date"]),
-             ("citation_inbook_title", d["book"]),
-             ("citation_conference_title", d["conference"]),
-             ("citation_series_title", d["series"]),
-             ("citation_firstpage", d["firstpage"]),
+    meta += [("citation_publication_date", d["date"])]
+    meta += [(k, d[f]) for k, f in (("citation_journal_title", "journal"), ("citation_inbook_title", "book"),
+             ("citation_conference_title", "conference"), ("citation_series_title", "series")) if d.get(f)]
+    meta += [("citation_firstpage", d["firstpage"]),
              ("citation_lastpage", d["lastpage"]),
              ("citation_publisher", d["publisher"]),
              ("citation_doi", p["doi"]),
@@ -150,7 +149,7 @@ for p in data.PUBS:
 <h1>{esc(p["title"])}</h1>
 <p class="a">{authors_html(p["authors"])}</p>
 <p class="v">{p["venue"]}, {p["year"]}.</p>
-<p class="actions"><a class="pdf" href="{d['pdf']}">{pdflabel}</a> <a href="https://doi.org/{esc(p['doi'])}">Published version (Springer)</a></p>
+<p class="actions"><a class="pdf" href="{d['pdf']}">{pdflabel}</a> <a href="https://doi.org/{esc(p['doi'])}">Published version ({d.get("pubshort", "Springer")})</a></p>
 <h2>Abstract</h2>
 <p class="abstract">{d["abstract"]}</p>
 <p class="kw">Keywords: {esc("; ".join(d["keywords"]))}</p>
