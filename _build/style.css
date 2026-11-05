@@ -1,0 +1,125 @@
+:root {
+  --paper: #ffffff;
+  --ink: #1b2533;
+  --muted: #5a6472;
+  --link: #1d4f91;
+  --link-hover: #0f3466;
+  --rule: #e2e6eb;
+  --year: #aeb8c4;
+  --note-bg: #f4f6f8;
+  --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #14181e;
+    --ink: #e4e8ed;
+    --muted: #9aa4b1;
+    --link: #8fb6ea;
+    --link-hover: #b9d2f3;
+    --rule: #2a313b;
+    --year: #4a5563;
+    --note-bg: #1b2028;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  font-optical-sizing: auto;
+}
+a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:hover { color: var(--link-hover); }
+a:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; border-radius: 2px; }
+
+.wrap { max-width: 46rem; margin: 0 auto; padding: 3.5rem 1.25rem 4rem; }
+@media (min-width: 64rem) { .wrap { max-width: 58rem; padding-left: 12rem; padding-right: 3rem; } }
+
+/* Header */
+.masthead h1 {
+  font-size: 2.6rem;
+  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.9rem;
+}
+.roles { font-family: var(--sans); font-size: 0.95rem; color: var(--muted); line-height: 1.55; margin: 0 0 1.1rem; }
+.roles span { display: block; }
+.contact { font-family: var(--sans); font-size: 0.95rem; margin: 0; display: flex; flex-wrap: wrap; gap: 0.35rem 1.25rem; }
+.intro { margin: 2rem 0 0; max-width: 38rem; }
+
+/* Publications */
+.pubs { margin-top: 3.5rem; }
+.pubs > h2, .section h2 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin: 0 0 0.4rem;
+}
+.pubs-note { font-family: var(--sans); font-size: 0.9rem; color: var(--muted); margin: 0 0 2rem; }
+
+.year { position: relative; border-top: 1px solid var(--rule); padding-top: 1.4rem; margin-top: 1.4rem; }
+.year h3 {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--muted);
+  margin: 0 0 1rem;
+  font-variant-numeric: lining-nums;
+}
+@media (min-width: 64rem) {
+  .year h3 {
+    position: absolute;
+    left: -10.5rem;
+    top: 1.15rem;
+    width: 9rem;
+    text-align: right;
+    font-size: 3.4rem;
+    color: var(--year);
+    margin: 0;
+  }
+}
+.year ol { list-style: none; margin: 0; padding: 0; }
+.pub { margin: 0 0 1.5rem; }
+.pub .t { font-size: 1.08rem; line-height: 1.4; font-weight: 600; margin: 0; }
+.pub .t a { color: var(--ink); text-decoration: none; }
+.pub .t a:hover { color: var(--link); text-decoration: underline; }
+.pub .a, .pub .v, .pub .l { font-family: var(--sans); font-size: 0.9rem; line-height: 1.5; margin: 0.2rem 0 0; }
+.pub .a { color: var(--ink); }
+.pub .a b { font-weight: 600; }
+.pub .v { color: var(--muted); }
+.pub .l { display: flex; flex-wrap: wrap; gap: 0.2rem 1rem; margin-top: 0.3rem; }
+.pub .l .pdf { font-weight: 600; }
+
+/* Paper page */
+.back { font-family: var(--sans); font-size: 0.9rem; margin: 0 0 2.5rem; }
+.paper h1 { font-size: 2rem; line-height: 1.2; font-weight: 600; margin: 0 0 1rem; }
+.paper .a { font-family: var(--sans); font-size: 1rem; margin: 0 0 0.3rem; }
+.paper .a b { font-weight: 600; }
+.paper .v { font-family: var(--sans); font-size: 0.95rem; color: var(--muted); margin: 0 0 1.6rem; }
+.actions { font-family: var(--sans); font-size: 0.95rem; display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin: 0 0 2rem; }
+.actions .pdf { font-weight: 600; }
+.paper h2 { font-size: 1.15rem; font-weight: 600; margin: 2.2rem 0 0.6rem; }
+.abstract { margin: 0; }
+.kw { font-family: var(--sans); font-size: 0.9rem; color: var(--muted); margin: 1rem 0 0; }
+.notice {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--muted);
+  background: var(--note-bg);
+  padding: 0.9rem 1rem;
+  border-radius: 4px;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.cite { font-family: var(--sans); font-size: 0.9rem; margin: 0; overflow-wrap: anywhere; }
+
+footer { margin-top: 4rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); font-family: var(--sans); font-size: 0.85rem; color: var(--muted); }
+footer p { margin: 0 0 0.4rem; }
