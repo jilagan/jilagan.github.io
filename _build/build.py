@@ -19,6 +19,28 @@ ANALYTICS = (f'<script async src="https://www.googletagmanager.com/gtag/js?id={G
 
 def esc(s): return html.escape(s, quote=True)
 
+import json, re
+PERSON = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Joseph Benjamin R. Ilagan",
+    "alternateName": ["Joseph Benjamin Ilagan", "Joben Ilagan"],
+    "url": BASE + "/",
+    "image": BASE + "/og.png",
+    "jobTitle": "Assistant Professor",
+    "worksFor": {"@type": "CollegeOrUniversity", "name": "Ateneo de Manila University", "url": "https://www.ateneo.edu"},
+    "affiliation": {"@type": "Organization", "name": "John Gokongwei School of Management, Ateneo de Manila University"},
+    "sameAs": ["https://scholar.google.com/citations?user=J1x6kG8AAAAJ",
+               "https://orcid.org/0000-0002-3748-6468",
+               "https://www.linkedin.com/in/jobenilagan/"],
+}
+PERSON_LD = '<script type="application/ld+json">' + json.dumps(PERSON, ensure_ascii=False) + '</script>\n'
+
+def summary(abstract, n=155):
+    t = " ".join(html.unescape(re.sub(r"<[^>]+>", "", abstract)).split())
+    if len(t) <= n: return t
+    return t[:n].rsplit(" ", 1)[0].rstrip(",;:.") + "…"
+
 def authors_html(lst):
     return ", ".join(f"<b>{esc(a)}</b>" if a == ME else esc(a) for a in lst)
 
@@ -40,6 +62,9 @@ def head(title, desc, path, extra=""):
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="627">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 {extra}{FONTS}
 <link rel="stylesheet" href="/style.css">
 </head>
@@ -114,7 +139,7 @@ body += "</section>\n"
 with open(os.path.join(OUT, "index.html"), "w", encoding="utf-8") as f:
     f.write(head("Joseph Benjamin R. Ilagan, Ateneo de Manila University",
                  "Publications of Joseph Benjamin R. Ilagan, Assistant Professor at the John Gokongwei School of Management, Ateneo de Manila University.",
-                 "/") + body + FOOT)
+                 "/", PERSON_LD) + body + FOOT)
 
 # Paper pages
 urls = ["/"]
@@ -161,7 +186,7 @@ for p in data.PUBS:
 </article>
 """
     with open(os.path.join(pdir, "index.html"), "w", encoding="utf-8") as f:
-        f.write(head(f'{p["title"]} | {first}{etal} {p["year"]}', p["title"], path, metahtml) + page + FOOT)
+        f.write(head(f'{p["title"]} | {first}{etal} {p["year"]}', summary(d["abstract"]), path, metahtml) + page + FOOT)
 
 with open(os.path.join(OUT, "robots.txt"), "w") as f:
     f.write(f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n")
