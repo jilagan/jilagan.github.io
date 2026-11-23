@@ -87,9 +87,16 @@ BACKGROUND = [
 TEACHING_INTRO = ("I direct the BS Information Technology Entrepreneurship program at the John Gokongwei "
                   "School of Management. Courses I teach:")
 TEACHING = [
-    ("ITENT 122", "Product Management: Pricing and Costing"),
-    ("DECSC 25", "Innovation Management and Human-Centered Design"),
-    ("OPMAN 146", "Service Management, with a focus on customer experience"),
-    ("", "Solutions Architecture"),
+    ("ITENT 21", "Introduction to Computing for Technology Startups", "/itent45/itent21.html"),
+    ("ITENT 45", "Application Development and Emerging Technologies", "/itent45/"),
+    ("ITENT 122", "Product Management: Pricing and Costing", None),
+    ("DECSC 25", "Innovation Management and Human-Centered Design", None),
+    ("OPMAN 146", "Service Management, with a focus on customer experience", None),
+    ("", "Solutions Architecture", None),
 ]
-TEACHING_NOTE = "DECSC 25 and OPMAN 146 are built around design thinking and jobs-to-be-done."
+TEACHING_NOTES = [
+    ("ITENT 21 and ITENT 45 use a shared set of short interactive lessons on how web applications, "
+     "AI language models, cloud and data systems work. Anyone can use them: see the "
+     '<a href="/itent45/library.html">lesson library</a>.'),
+    "DECSC 25 and OPMAN 146 are built around design thinking and jobs-to-be-done.",
+]

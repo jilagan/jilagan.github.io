@@ -161,9 +161,10 @@ for role, desc in content.BACKGROUND:
     body += f"<dt>{esc(role)}</dt>\n" + (f"<dd>{esc(desc)}</dd>\n" if desc else "<dd></dd>\n")
 body += "</dl>\n</section>\n"
 body += f'<section class="section" id="teaching" aria-labelledby="teaching-h">\n<h2 id="teaching-h">Teaching</h2>\n<p>{esc(content.TEACHING_INTRO)}</p>\n<ul class="courses">\n'
-for code, title in content.TEACHING:
-    body += f'<li><span class="code">{esc(code)}</span> {esc(title)}</li>\n'
-body += f"</ul>\n<p>{esc(content.TEACHING_NOTE)}</p>\n</section>\n"
+for code, title, url in content.TEACHING:
+    t = f'<a href="{esc(url)}">{esc(title)}</a>' if url else esc(title)
+    body += f'<li><span class="code">{esc(code)}</span> <span>{t}</span></li>\n'
+body += "</ul>\n" + "".join(f"<p>{n}</p>\n" for n in content.TEACHING_NOTES) + "</section>\n"
 
 with open(os.path.join(OUT, "index.html"), "w", encoding="utf-8") as f:
     f.write(head("Joseph Benjamin R. Ilagan, Ateneo de Manila University",
