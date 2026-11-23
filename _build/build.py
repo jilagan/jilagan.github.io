@@ -101,18 +101,32 @@ def pub_item(p):
 
 os.makedirs(OUT, exist_ok=True)
 shutil.copy(os.path.join(here, "style.css"), os.path.join(OUT, "style.css"))
-shutil.copy(os.path.join(here, "og.png"), os.path.join(OUT, "og.png"))
+for fn in ("og.png", "favicon.ico", "favicon-32.png", "apple-touch-icon.png"):
+    shutil.copy(os.path.join(here, fn), os.path.join(OUT, fn))
 open(os.path.join(OUT, ".nojekyll"), "w").close()
 with open(os.path.join(OUT, "CNAME"), "w") as f: f.write("jobenilagan.com\n")
 
 # Home page
-years = []
-for p in data.PUBS:
-    if not years or years[-1][0] != p["year"]:
-        years.append((p["year"], []))
-    years[-1][1].append(p)
+spec2 = importlib.util.spec_from_file_location("content", os.path.join(here, "content.py"))
+content = importlib.util.module_from_spec(spec2); spec2.loader.exec_module(content)
+BY_DOI = {p["doi"]: p for p in data.PUBS if p.get("doi")}
 
-body = f"""<header class="masthead">
+def pub_href(p):
+    return f'/papers/{p["page"]}/' if p.get("page") else (f'https://doi.org/{p["doi"]}' if p.get("doi") else p.get("url"))
+
+def ref_list(dois, videos):
+    rows = []
+    for d in dois:
+        p = BY_DOI[d]
+        venue = html.unescape(p["venue"]).replace("<i>", "").replace("</i>", "")
+        venue = venue[3:] if venue.startswith("In ") else venue
+        venue = venue.split(", pp.")[0].split(", CCIS")[0].split(", LNCS")[0].split(", LNNS")[0]
+        rows.append(f'<li><a href="{esc(pub_href(p))}">{esc(p["title"])}</a> <span class="src">{esc(venue)}, {p["year"]}</span></li>')
+    for title, vid in videos:
+        rows.append(f'<li><a href="{content.YT}{vid}">{esc(title)}</a> <span class="src">Video</span></li>')
+    return '<ul class="refs">\n' + "\n".join(rows) + "\n</ul>\n" if rows else ""
+
+MASTHEAD = """<header class="masthead">
 <h1>Joseph Benjamin R. Ilagan</h1>
 <p class="roles">
 <span>Assistant Professor, John Gokongwei School of Management, Ateneo de Manila University</span>
@@ -120,29 +134,64 @@ body = f"""<header class="masthead">
 <span>Program Director, BS Information Technology Entrepreneurship</span>
 </p>
 <p class="contact">
-<a href="mailto:jbilagan@ateneo.edu">jbilagan@ateneo.edu</a>
+""" + open(os.path.join(here, "contact.html"), encoding="utf-8").read().strip() + """
 <a href="https://scholar.google.com/citations?user=J1x6kG8AAAAJ">Google Scholar</a>
 <a href="https://orcid.org/0000-0002-3748-6468">ORCID</a>
 <a href="https://ph.linkedin.com/in/jobenilagan">LinkedIn</a>
 </p>
 </header>
-<p class="intro">I build and evaluate AI systems for learning and for small businesses, using design-based research. Current work covers conversational tutoring and learning simulations for entrepreneurship and management education, AI-assisted workflows in research and administration, data tools for micro and small enterprises, and digital public infrastructure for identity verification. I joined Ateneo full-time in 2019 after more than 26 years in industry and completed a PhD in Computer Science in 2026.</p>
-
-<section class="pubs" aria-labelledby="pubs-h">
-<h2 id="pubs-h">Publications</h2>
-<p class="pubs-note">Newest first. Free author copies are linked as PDFs where the publisher allows it. Open-access versions are marked.</p>
 """
-for y, items in years:
-    body += f'<section class="year" aria-label="{y}">\n<h3>{y}</h3>\n<ol>\n' + "\n".join(pub_item(p) for p in items) + "\n</ol>\n</section>\n"
+NAV = """<nav class="sitenav" aria-label="Sections">
+<a href="/#research">Research</a> <a href="/#projects">Projects</a> <a href="/#background">Background</a> <a href="/#teaching">Teaching</a> <a href="/publications/">Publications</a>
+</nav>
+"""
+
+body = MASTHEAD + NAV + f'<p class="intro">{esc(content.INTRO)}</p>\n'
+body += '<section class="section" id="research" aria-labelledby="research-h">\n<h2 id="research-h">Research</h2>\n'
+for t in content.RESEARCH:
+    body += f'<div class="item">\n<h3>{esc(t["title"])}</h3>\n<p>{t["text"]}</p>\n' + ref_list(t["papers"], t["videos"]) + "</div>\n"
+body += '<p class="more"><a href="/publications/">All publications</a></p>\n</section>\n'
+body += '<section class="section" id="projects" aria-labelledby="projects-h">\n<h2 id="projects-h">Projects</h2>\n'
+for pr in content.PROJECTS:
+    name = f'<a href="{esc(pr["url"])}">{esc(pr["name"])}</a>' if pr.get("url") else esc(pr["name"])
+    body += f'<div class="item">\n<h3>{name}</h3>\n<p>{pr["text"]}</p>\n' + ref_list(pr.get("papers", []), pr.get("videos", [])) + "</div>\n"
 body += "</section>\n"
+body += f'<section class="section" id="background" aria-labelledby="background-h">\n<h2 id="background-h">Background</h2>\n<p>{esc(content.BACKGROUND_INTRO)}</p>\n<dl class="cv">\n'
+for role, desc in content.BACKGROUND:
+    body += f"<dt>{esc(role)}</dt>\n" + (f"<dd>{esc(desc)}</dd>\n" if desc else "<dd></dd>\n")
+body += "</dl>\n</section>\n"
+body += f'<section class="section" id="teaching" aria-labelledby="teaching-h">\n<h2 id="teaching-h">Teaching</h2>\n<p>{esc(content.TEACHING_INTRO)}</p>\n<ul class="courses">\n'
+for code, title in content.TEACHING:
+    body += f'<li><span class="code">{esc(code)}</span> {esc(title)}</li>\n'
+body += f"</ul>\n<p>{esc(content.TEACHING_NOTE)}</p>\n</section>\n"
 
 with open(os.path.join(OUT, "index.html"), "w", encoding="utf-8") as f:
     f.write(head("Joseph Benjamin R. Ilagan, Ateneo de Manila University",
-                 "Publications of Joseph Benjamin R. Ilagan, Assistant Professor at the John Gokongwei School of Management, Ateneo de Manila University.",
+                 "Research, projects and publications of Joseph Benjamin R. Ilagan, Assistant Professor at the John Gokongwei School of Management, Ateneo de Manila University.",
                  "/", PERSON_LD) + body + FOOT)
 
+# Publications page
+years = []
+for p in data.PUBS:
+    if not years or years[-1][0] != p["year"]:
+        years.append((p["year"], []))
+    years[-1][1].append(p)
+pbody = '<p class="back"><a href="/">Joseph Benjamin R. Ilagan</a></p>\n' + NAV
+pbody += """<section class="pubs" aria-labelledby="pubs-h">
+<h1 id="pubs-h">Publications</h1>
+<p class="pubs-note">Newest first. Free author copies are linked as PDFs where the publisher allows it. Open-access versions are marked.</p>
+"""
+for y, items in years:
+    pbody += f'<section class="year" aria-label="{y}">\n<h3>{y}</h3>\n<ol>\n' + "\n".join(pub_item(p) for p in items) + "\n</ol>\n</section>\n"
+pbody += "</section>\n"
+os.makedirs(os.path.join(OUT, "publications"), exist_ok=True)
+with open(os.path.join(OUT, "publications", "index.html"), "w", encoding="utf-8") as f:
+    f.write(head("Publications | Joseph Benjamin R. Ilagan",
+                 "Publications of Joseph Benjamin R. Ilagan, with free author copies where publishers allow.",
+                 "/publications/") + pbody + FOOT)
+
 # Paper pages
-urls = ["/"]
+urls = ["/", "/publications/"]
 for p in data.PUBS:
     slug = p.get("page")
     if not slug: continue
@@ -170,7 +219,7 @@ for p in data.PUBS:
     etal = " et al." if len(p["authors"]) > 2 else (f" and {p['authors'][1].split()[-1]}" if len(p["authors"]) == 2 else "")
     cite = f'{", ".join(p["authors"])} ({p["year"]}). {p["title"]}. {html.unescape(p["venue"]).replace("<i>","").replace("</i>","")}. https://doi.org/{p["doi"]}'
     pdflabel = "Download PDF" + (" (preprint)" if "Preprint" in d["version"] else " (accepted manuscript)")
-    page = f"""<p class="back"><a href="/">Joseph Benjamin R. Ilagan</a></p>
+    page = f"""<p class="back"><a href="/">Joseph Benjamin R. Ilagan</a> / <a href="/publications/">Publications</a></p>
 <article class="paper">
 <h1>{esc(p["title"])}</h1>
 <p class="a">{authors_html(p["authors"])}</p>
